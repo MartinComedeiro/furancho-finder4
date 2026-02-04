@@ -19,6 +19,7 @@ html, body {
   align-items: center;
   gap: 12px;
   padding: 10px 8px;
+  position: relative;
 }
 
 .sidebar-top {
@@ -144,6 +145,88 @@ html, body {
   grid-template-columns: 96px 1fr;
   max-width: 420px;
   min-width: 320px;
+  z-index: 1000;
+}
+
+.drawer {
+  position: absolute;
+  top: 0;
+  left: 64px;
+  height: 100vh;
+  width: 320px;
+  background: #ffffff;
+  border-right: 1px solid #e8e8e8;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+  transform: translateX(-16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 160ms ease, opacity 160ms ease;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.drawer-open .drawer {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer-header {
+  height: 64px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.drawer-title {
+  font-weight: 700;
+  color: #222;
+}
+
+.drawer-list {
+  padding: 10px;
+  overflow: auto;
+}
+
+.drawer-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: #f7f7f7;
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.drawer-item:hover {
+  background: #f1f1f1;
+}
+
+.drawer-item-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #eaeaea;
+}
+
+.drawer-item-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #222;
+}
+
+.drawer-item-sub {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
 }
 
 .furancho-card.hidden {

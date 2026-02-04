@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FuranchoFinder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/app.css?v=1') ?>">
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-top">
                 <button class="icon-btn" id="menuBtn" type="button">☰</button>
             </div>
@@ -18,6 +18,14 @@
                 <button class="nav-item" type="button" title="Furanchos">📍</button>
                 <button class="nav-item" type="button" title="Sesión">👤</button>
             </nav>
+
+            <div id="drawer" class="drawer" aria-hidden="true">
+                <div class="drawer-header">
+                    <div class="drawer-title">Furanchos</div>
+                    <button class="icon-btn" id="closeDrawerBtn" type="button">✕</button>
+                </div>
+                <div id="drawerList" class="drawer-list"></div>
+            </div>
         </aside>
 
         <main class="content">
@@ -57,6 +65,6 @@
     <script>
         window.FF_BASE_URL = "<?= rtrim(base_url('/'), '/') ?>";
     </script>
-    <script src="<?= base_url('assets/js/map.js') ?>"></script>
+    <script src="<?= base_url('assets/js/map.js?v=1') ?>"></script>
 </body>
 </html>

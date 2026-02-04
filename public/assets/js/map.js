@@ -17,12 +17,37 @@
   const cardSub = document.getElementById('cardSub');
   const cardOpen = document.getElementById('cardOpen');
 
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('drawer');
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  const drawerList = document.getElementById('drawerList');
+
   const searchInput = document.getElementById('searchInput');
   const clearSearch = document.getElementById('clearSearch');
   const locateBtn = document.getElementById('locateBtn');
 
   let myPos = null;
   let markers = [];
+  let markersById = new Map();
+
+  function openDrawer() {
+    sidebar.classList.add('drawer-open');
+    drawer.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeDrawer() {
+    sidebar.classList.remove('drawer-open');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+
+  function toggleDrawer() {
+    if (sidebar.classList.contains('drawer-open')) {
+      closeDrawer();
+    } else {
+      openDrawer();
+    }
+  }
 
   function haversineKm(a, b) {
     const R = 6371;
@@ -64,6 +89,50 @@
       map.removeLayer(m.marker);
     }
     markers = [];
+    markersById = new Map();
+  }
+
+  function setDrawerList(list) {
+    drawerList.innerHTML = '';
+
+    for (const f of list) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'drawer-item';
+
+      const img = document.createElement('img');
+      img.className = 'drawer-item-img';
+      img.alt = '';
+      img.src = f.image_url || '';
+
+      const meta = document.createElement('div');
+      const title = document.createElement('div');
+      title.className = 'drawer-item-title';
+      title.textContent = f.name || '';
+
+      const sub = document.createElement('div');
+      sub.className = 'drawer-item-sub';
+      sub.textContent = (f.address ? f.address : '');
+
+      meta.appendChild(title);
+      meta.appendChild(sub);
+
+      btn.appendChild(img);
+      btn.appendChild(meta);
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const marker = markersById.get(String(f.id));
+        if (marker) {
+          map.setView(marker.getLatLng(), Math.max(map.getZoom(), 15), { animate: true });
+        }
+        setCard(f);
+        closeDrawer();
+      });
+
+      drawerList.appendChild(btn);
+    }
   }
 
   function markerIcon(color) {
@@ -101,9 +170,16 @@
 
       const icon = Number(f.is_open) === 1 ? markerIcon('green') : markerIcon('red');
       const marker = L.marker([lat, lng], { icon }).addTo(map);
-      marker.on('click', () => setCard(f));
+      marker.on('click', (ev) => {
+        if (ev && ev.originalEvent) {
+          ev.originalEvent.preventDefault();
+          ev.originalEvent.stopPropagation();
+        }
+        setCard(f);
+      });
 
       markers.push({ f, marker });
+      markersById.set(String(f.id), marker);
     }
 
     if (filtered.length > 0) {
@@ -125,6 +201,7 @@
     }
 
     window.__furanchos = data;
+    setDrawerList(data);
     render(data);
   }
 
@@ -146,7 +223,27 @@
     );
   }
 
-  map.on('click', hideCard);
+  map.on('click', () => {
+    hideCard();
+    closeDrawer();
+  });
+
+  L.DomEvent.disableClickPropagation(card);
+  L.DomEvent.disableScrollPropagation(card);
+  L.DomEvent.disableClickPropagation(drawer);
+  L.DomEvent.disableScrollPropagation(drawer);
+
+  menuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleDrawer();
+  });
+
+  closeDrawerBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeDrawer();
+  });
 
   searchInput.addEventListener('input', () => {
     if (Array.isArray(window.__furanchos)) {
