@@ -2,7 +2,7 @@
 
 ## Como se instala?
 
-Pones git clean https://github.com/MartinComedeiro/furancho-finder4 en el terminal
+Pones git clone https://github.com/MartinComedeiro/furancho-finder4 en el terminal
 
 Tienes que tener instalado tanto Docker como docker-compose
 
