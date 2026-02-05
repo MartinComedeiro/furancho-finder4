@@ -18,10 +18,10 @@ final class ExampleDatabaseTest extends CIUnitTestCase
     {
         $model = new ExampleModel();
 
-        // Get every row created by ExampleSeeder
+        // Consulta todos los registros creados por ExampleSeeder (hace datos de prueba)
         $objects = $model->findAll();
 
-        // Make sure the count is as expected
+        // Se asegura de que el resultado sea el esperado
         $this->assertCount(3, $objects);
     }
 

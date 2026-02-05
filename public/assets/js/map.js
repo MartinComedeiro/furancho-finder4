@@ -25,11 +25,18 @@
 
   const searchInput = document.getElementById('searchInput');
   const clearSearch = document.getElementById('clearSearch');
-  const locateBtn = document.getElementById('locateBtn');
 
-  let myPos = null;
   let markers = [];
   let markersById = new Map();
+  let currentFurancho = null;
+
+  async function apiFetch(path) {
+    return fetch(path, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+  }
 
   function openDrawer() {
     sidebar.classList.add('drawer-open');
@@ -49,38 +56,22 @@
     }
   }
 
-  function haversineKm(a, b) {
-    const R = 6371;
-    const toRad = (x) => (x * Math.PI) / 180;
-    const dLat = toRad(b.lat - a.lat);
-    const dLng = toRad(b.lng - a.lng);
-    const s1 = Math.sin(dLat / 2);
-    const s2 = Math.sin(dLng / 2);
-    const q = s1 * s1 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * s2 * s2;
-    return 2 * R * Math.asin(Math.sqrt(q));
-  }
-
   function setCard(f) {
+    currentFurancho = f;
     cardTitle.textContent = f.name || '';
 
     const img = f.image_url || '';
     cardImg.src = img;
     cardImg.alt = f.name || '';
 
-    let sub = '';
-    if (myPos) {
-      const km = haversineKm(myPos, { lat: Number(f.lat), lng: Number(f.lng) });
-      sub = `A ${km.toFixed(1)} kilómetros de ti`;
-    } else {
-      sub = (f.address ? f.address : '');
-    }
-    cardSub.textContent = sub;
+    cardSub.textContent = (f.address ? f.address : '');
 
     cardOpen.textContent = Number(f.is_open) === 1 ? 'Abierto' : 'Cerrado';
     card.classList.remove('hidden');
   }
 
   function hideCard() {
+    currentFurancho = null;
     card.classList.add('hidden');
   }
 
@@ -106,15 +97,19 @@
       img.src = f.image_url || '';
 
       const meta = document.createElement('div');
+      const top = document.createElement('div');
+      top.className = 'drawer-item-top';
+
       const title = document.createElement('div');
       title.className = 'drawer-item-title';
       title.textContent = f.name || '';
+      top.appendChild(title);
 
       const sub = document.createElement('div');
       sub.className = 'drawer-item-sub';
       sub.textContent = (f.address ? f.address : '');
 
-      meta.appendChild(title);
+      meta.appendChild(top);
       meta.appendChild(sub);
 
       btn.appendChild(img);
@@ -189,8 +184,7 @@
   }
 
   async function load() {
-    const url = (window.FF_BASE_URL || '') + '/api/furanchos';
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const res = await apiFetch('/api/furanchos');
     if (!res.ok) {
       return;
     }
@@ -203,24 +197,6 @@
     window.__furanchos = data;
     setDrawerList(data);
     render(data);
-  }
-
-  function locate() {
-    if (!navigator.geolocation) {
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        myPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        map.setView([myPos.lat, myPos.lng], 15);
-        if (Array.isArray(window.__furanchos)) {
-          render(window.__furanchos);
-        }
-      },
-      () => {},
-      { enableHighAccuracy: true, timeout: 7000 }
-    );
   }
 
   map.on('click', () => {
@@ -258,8 +234,6 @@
     }
     searchInput.focus();
   });
-
-  locateBtn.addEventListener('click', locate);
 
   load();
 })();
