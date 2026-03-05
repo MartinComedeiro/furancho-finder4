@@ -128,35 +128,12 @@ html, body {
   background: #ededed;
 }
 
-.search {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f3f4f6;
-  border-radius: 999px;
-  padding: 10px 12px;
-  flex: 1;
-  min-width: 140px;
-}
-
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
   min-width: 0;
-}
-
-.search-icon {
-  opacity: 0.6;
-}
-
-.search-input {
-  width: 100%;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font-size: 14px;
 }
 
 .map-wrap {

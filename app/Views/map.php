@@ -30,12 +30,6 @@
                     <div class="brand-name">FuranchoFinder</div>
                 </div>
 
-                <div class="search">
-                    <span class="search-icon">🔎</span>
-                    <input id="searchInput" class="search-input" type="search" placeholder="Búsqueda..." autocomplete="off">
-                    <button id="clearSearch" class="icon-btn" type="button">✕</button>
-                </div>
-
                 <div class="topbar-actions">
                     <div class="user-chip"><?= esc((string) session()->get('user_email')) ?></div>
                     <a class="link-btn" href="<?= base_url('logout') ?>">Salir</a>

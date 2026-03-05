@@ -23,9 +23,6 @@
   const closeDrawerBtn = document.getElementById('closeDrawerBtn');
   const drawerList = document.getElementById('drawerList');
 
-  const searchInput = document.getElementById('searchInput');
-  const clearSearch = document.getElementById('clearSearch');
-
   let markers = [];
   let markersById = new Map();
   let currentFurancho = null;
@@ -151,12 +148,7 @@
     clearMarkers();
     hideCard();
 
-    const q = (searchInput.value || '').trim().toLowerCase();
-    const filtered = q
-      ? list.filter((f) => String(f.name || '').toLowerCase().includes(q))
-      : list;
-
-    for (const f of filtered) {
+    for (const f of list) {
       const lat = Number(f.lat);
       const lng = Number(f.lng);
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
@@ -177,8 +169,8 @@
       markersById.set(String(f.id), marker);
     }
 
-    if (filtered.length > 0) {
-      const bounds = L.latLngBounds(filtered.map((f) => [Number(f.lat), Number(f.lng)]));
+    if (list.length > 0) {
+      const bounds = L.latLngBounds(list.map((f) => [Number(f.lat), Number(f.lng)]));
       map.fitBounds(bounds.pad(0.2));
     }
   }
@@ -219,20 +211,6 @@
     e.preventDefault();
     e.stopPropagation();
     closeDrawer();
-  });
-
-  searchInput.addEventListener('input', () => {
-    if (Array.isArray(window.__furanchos)) {
-      render(window.__furanchos);
-    }
-  });
-
-  clearSearch.addEventListener('click', () => {
-    searchInput.value = '';
-    if (Array.isArray(window.__furanchos)) {
-      render(window.__furanchos);
-    }
-    searchInput.focus();
   });
 
   load();
