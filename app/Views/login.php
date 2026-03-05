@@ -28,7 +28,7 @@
 
                 <button class="auth-submit" type="submit">Entrar</button>
 
-                <div class="auth-hint">Usuario demo: admin@furanchofinder.local / admin123</div>
+                <div class="auth-hint">Usuario de ejemplo: admin@furanchofinder.local / admin123</div>
             </form>
         </div>
     </div>

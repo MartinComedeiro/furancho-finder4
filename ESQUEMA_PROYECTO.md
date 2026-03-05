@@ -97,6 +97,73 @@
 6. **`Map.php`** requiere sesión y renderiza `map.php`.
 7. **Frontend (`map.js`)** llama a `/api/furanchos` y pinta mapa con Leaflet.
 
+## Ciclo de llamadas (request → backend → frontend → API → BD)
+
+### 1) Navegador → servidor web
+
+1. El usuario navega a **`GET /map`**.
+2. Apache recibe la petición y, por reglas de rewrite, la manda a:
+   - **`public/index.php`** (front controller).
+3. `public/index.php` arranca CodeIgniter (boot) y delega en el router.
+
+### 2) Router → Controller (backend)
+
+1. **`app/Config/Routes.php`** resuelve la ruta:
+   - `GET /map` → **`App\Controllers\Map::index()`**
+2. **`Map::index()`**:
+   - Comprueba sesión `session()->has('user_id')`.
+   - Si no hay sesión → `redirect()->to('/login')`.
+   - Si hay sesión → `return view('map')`.
+3. CodeIgniter renderiza la vista:
+   - **`app/Views/map.php`** (HTML del layout + includes de CSS/JS).
+
+### 3) Vista → carga de assets (frontend)
+
+1. El navegador descarga:
+   - `public/assets/css/app.css`
+   - `public/assets/js/map.js`
+   - Leaflet CSS/JS desde CDN.
+2. Cuando se ejecuta **`map.js`**:
+   - Inicializa Leaflet: `L.map(...)`, `L.tileLayer(...).addTo(map)`.
+   - Define helpers internos (p.ej. `apiFetch()`, `render()`, etc.).
+   - Llama a `load()`.
+
+### 4) Frontend → API (backend)
+
+1. `load()` hace `fetch('/api/furanchos')`.
+2. El router resuelve:
+   - `GET /api/furanchos` → **`App\Controllers\Api\Furanchos::index()`**
+3. **`Furanchos::index()`**:
+   - Instancia el modelo: `new FuranchoModel()`.
+   - Consulta BD con: `findAll()`.
+   - Devuelve JSON: `return $this->respond($furanchos)`.
+
+### 5) Modelo → Base de datos
+
+1. **`App\Models\FuranchoModel`** usa el driver configurado en:
+   - **`app/Config/Database.php`** (en tu caso via variables de entorno desde `docker-compose.yml`).
+2. `findAll()` genera la query (Query Builder) contra la tabla:
+   - `furanchos`
+
+### 6) Respuesta API → render en el mapa
+
+1. `map.js` recibe el JSON (array) y lo guarda en `window.__furanchos`.
+2. Llama a `render(data)`.
+3. `render()`:
+   - Limpia markers anteriores.
+   - Recorre la lista y crea markers Leaflet `L.marker([lat, lng], { icon })`.
+   - Ajusta el viewport con `map.fitBounds(...)`.
+
+### 7) Ciclo de login (cuando no hay sesión)
+
+1. Usuario intenta `GET /map` sin sesión → `Map::index()` redirige a **`GET /login`**.
+2. `GET /login` → `Auth::loginForm()` → `view('login')`.
+3. El formulario hace `POST /auth/login` → `Auth::login()`:
+   - Lee `email/password`.
+   - Busca usuario con `UserModel->where('email', $email)->first()`.
+   - Verifica con `password_verify()`.
+   - Si OK: guarda `user_id` y `user_email` en sesión y redirige a `/map`.
+
 ## Seguridad
 
 - **Contraseñas**: `password_hash()` (bcrypt) + `password_verify()`.
