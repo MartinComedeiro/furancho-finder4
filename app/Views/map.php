@@ -9,20 +9,6 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-top">
-                <button class="icon-btn" id="menuBtn" type="button">☰</button>
-            </div>
-
-            <div id="drawer" class="drawer" aria-hidden="true">
-                <div class="drawer-header">
-                    <div class="drawer-title">Furanchos</div>
-                    <button class="icon-btn" id="closeDrawerBtn" type="button">✕</button>
-                </div>
-                <div id="drawerList" class="drawer-list"></div>
-            </div>
-        </aside>
-
         <main class="content">
             <header class="topbar">
                 <div class="brand">

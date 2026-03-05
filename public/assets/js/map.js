@@ -17,12 +17,6 @@
   const cardSub = document.getElementById('cardSub');
   const cardOpen = document.getElementById('cardOpen');
 
-  const sidebar = document.getElementById('sidebar');
-  const menuBtn = document.getElementById('menuBtn');
-  const drawer = document.getElementById('drawer');
-  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-  const drawerList = document.getElementById('drawerList');
-
   let markers = [];
   let markersById = new Map();
   let currentFurancho = null;
@@ -33,24 +27,6 @@
         'Accept': 'application/json',
       },
     });
-  }
-
-  function openDrawer() {
-    sidebar.classList.add('drawer-open');
-    drawer.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeDrawer() {
-    sidebar.classList.remove('drawer-open');
-    drawer.setAttribute('aria-hidden', 'true');
-  }
-
-  function toggleDrawer() {
-    if (sidebar.classList.contains('drawer-open')) {
-      closeDrawer();
-    } else {
-      openDrawer();
-    }
   }
 
   function setCard(f) {
@@ -78,53 +54,6 @@
     }
     markers = [];
     markersById = new Map();
-  }
-
-  function setDrawerList(list) {
-    drawerList.innerHTML = '';
-
-    for (const f of list) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'drawer-item';
-
-      const img = document.createElement('img');
-      img.className = 'drawer-item-img';
-      img.alt = '';
-      img.src = f.image_url || '';
-
-      const meta = document.createElement('div');
-      const top = document.createElement('div');
-      top.className = 'drawer-item-top';
-
-      const title = document.createElement('div');
-      title.className = 'drawer-item-title';
-      title.textContent = f.name || '';
-      top.appendChild(title);
-
-      const sub = document.createElement('div');
-      sub.className = 'drawer-item-sub';
-      sub.textContent = (f.address ? f.address : '');
-
-      meta.appendChild(top);
-      meta.appendChild(sub);
-
-      btn.appendChild(img);
-      btn.appendChild(meta);
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const marker = markersById.get(String(f.id));
-        if (marker) {
-          map.setView(marker.getLatLng(), Math.max(map.getZoom(), 15), { animate: true });
-        }
-        setCard(f);
-        closeDrawer();
-      });
-
-      drawerList.appendChild(btn);
-    }
   }
 
   function markerIcon(color) {
@@ -187,31 +116,15 @@
     }
 
     window.__furanchos = data;
-    setDrawerList(data);
     render(data);
   }
 
   map.on('click', () => {
     hideCard();
-    closeDrawer();
   });
 
   L.DomEvent.disableClickPropagation(card);
   L.DomEvent.disableScrollPropagation(card);
-  L.DomEvent.disableClickPropagation(drawer);
-  L.DomEvent.disableScrollPropagation(drawer);
-
-  menuBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleDrawer();
-  });
-
-  closeDrawerBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    closeDrawer();
-  });
 
   load();
 })();
