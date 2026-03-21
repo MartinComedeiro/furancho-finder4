@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - FuranchoFinder</title>
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css?v=2') ?>">
+    <link rel="stylesheet" href="/assets/css/app.css?v=2">
 </head>
 <body>
     <div class="auth-wrap">
@@ -15,7 +15,7 @@
                 <div class="auth-error"><?= esc((string) session()->getFlashdata('error')) ?></div>
             <?php endif; ?>
 
-            <form method="post" action="<?= base_url('auth/login') ?>" class="auth-form">
+            <form method="post" action="/auth/login" class="auth-form">
                 <label class="auth-label">
                     Email
                     <input class="auth-input" name="email" type="email" required autocomplete="username">

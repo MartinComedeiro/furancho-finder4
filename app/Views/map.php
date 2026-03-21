@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FuranchoFinder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css?v=4') ?>">
+    <link rel="stylesheet" href="/assets/css/app.css?v=4">
 </head>
 <body>
     <div class="app">
@@ -18,7 +18,7 @@
 
                 <div class="topbar-actions">
                     <div class="user-chip"><?= esc((string) session()->get('user_email')) ?></div>
-                    <a class="link-btn" href="<?= base_url('logout') ?>">Salir</a>
+                    <a class="link-btn" href="/logout">Salir</a>
                 </div>
             </header>
 
@@ -40,6 +40,6 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="<?= base_url('assets/js/map.js?v=4') ?>"></script>
+    <script src="/assets/js/map.js?v=4"></script>
 </body>
 </html>
